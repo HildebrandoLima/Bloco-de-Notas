@@ -1,5 +1,11 @@
 package com.repository;
 
-public class NotaRepository {
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
 
+import com.model.Nota;
+
+@Repository
+public interface NotaRepository extends CrudRepository<Nota, Long> {
+	//
 }

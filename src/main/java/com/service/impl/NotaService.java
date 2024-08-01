@@ -1,5 +1,17 @@
 package com.service.impl;
 
-public class NotaService {
+import com.model.Nota;
+
+public interface NotaService {
+
+	Iterable<Nota> searchAll();
+
+	Nota searchByID(Long id);
+
+	void create(Nota nota);
+
+	void update(Long id, Nota nota);
+
+	void delete(Long id);
 
 }
