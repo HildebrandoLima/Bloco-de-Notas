@@ -1,5 +1,6 @@
 package com.service.impl;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,6 +8,8 @@ import org.springframework.stereotype.Service;
 
 import com.model.Nota;
 import com.repository.NotaRepository;
+import com.service.exception.HttpConflict;
+import com.service.exception.HttpNotFound;
 
 @Service
 public class NotaImplService implements NotaService {
@@ -25,23 +28,28 @@ public class NotaImplService implements NotaService {
 
 	@Override
 	public Nota searchByID(Long id) {
-		Optional<Nota> nota = notaRepository.findById(id);
+		Optional<Nota> nota = thereIsNoteById(id);
 		if (nota.isEmpty()) {
-			//
+			throw new HttpNotFound();
 		}
 		return nota.get();
 	}
 
 	@Override
 	public void create(Nota nota) {
+		if (!thereIsNoteByTitle(nota.getTitulo()).isEmpty()) {
+			throw new HttpConflict();
+		}
 		notaRepository.save(nota);
 	}
 
 	@Override
 	public void update(Long id, Nota nota) {
-		Optional<Nota> exist = notaRepository.findById(id);
-		if (exist.isEmpty()) {
-			//
+		if (thereIsNoteById(id).isEmpty()) {
+			throw new HttpNotFound();
+		}
+		if (!thereIsNoteByTitle(nota.getTitulo()).isEmpty()) {
+			throw new HttpConflict();
 		}
 		notaRepository.save(nota);
 	}
@@ -49,6 +57,16 @@ public class NotaImplService implements NotaService {
 	@Override
 	public void delete(Long id) {
 		notaRepository.deleteById(id);
+	}
+
+	private Optional<Nota> thereIsNoteById(Long id) {
+		Optional<Nota> exist = notaRepository.findById(id);
+		return exist;
+	}
+
+	private List<Nota> thereIsNoteByTitle(String title) {
+		List<Nota> exist = notaRepository.findAllByTitulo(title);
+		return exist;
 	}
 
 }
