@@ -1,14 +1,12 @@
 package com.service.exception;
 
-import java.util.List;
-
 public class Response {
 
 	private String message;
-	private List<Object> data;
+	private Object[] data;
 	private int status;
 
-	public Response(String message, List<Object> data, int status) {
+	public Response(String message, Object[] data, int status) {
 		this.message = message;
 		this.data = data;
 		this.status = status;
@@ -22,11 +20,11 @@ public class Response {
 		this.message = message;
 	}
 
-	public List<Object> getData() {
+	public Object[] getData() {
 		return data;
 	}
 
-	public void setData(List<Object> data) {
+	public void setData(Object[] data) {
 		this.data = data;
 	}
 

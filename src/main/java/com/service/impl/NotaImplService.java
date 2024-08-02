@@ -2,6 +2,8 @@ package com.service.impl;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -10,6 +12,7 @@ import com.model.Nota;
 import com.repository.NotaRepository;
 import com.service.exception.HttpConflict;
 import com.service.exception.HttpNotFound;
+import com.service.exception.HttpOk;
 
 @Service
 public class NotaImplService implements NotaService {
@@ -23,7 +26,9 @@ public class NotaImplService implements NotaService {
 
 	@Override
 	public Iterable<Nota> searchAll() {
-		return notaRepository.findAll();
+		Iterable<Nota> notas = notaRepository.findAll();
+		Nota[] data = listToArray(notas);
+		throw new HttpOk(data);
 	}
 
 	@Override
@@ -32,7 +37,7 @@ public class NotaImplService implements NotaService {
 		if (nota.isEmpty()) {
 			throw new HttpNotFound();
 		}
-		return nota.get();
+		throw new HttpOk(new Nota[]{nota.get()});
 	}
 
 	@Override
@@ -41,6 +46,7 @@ public class NotaImplService implements NotaService {
 			throw new HttpConflict();
 		}
 		notaRepository.save(nota);
+		throw new HttpOk(null);
 	}
 
 	@Override
@@ -52,11 +58,20 @@ public class NotaImplService implements NotaService {
 			throw new HttpConflict();
 		}
 		notaRepository.save(nota);
+		throw new HttpOk(null);
 	}
 
 	@Override
 	public void delete(Long id) {
 		notaRepository.deleteById(id);
+		throw new HttpOk(null);
+	}
+
+	private Nota[] listToArray(Iterable<Nota> notas) {
+		Nota[] data = StreamSupport
+		.stream(notas.spliterator(), false)
+        .toArray(Nota[]::new);
+		return data;
 	}
 
 	private Optional<Nota> thereIsNoteById(Long id) {
