@@ -6,7 +6,7 @@ public class HttpOk extends RuntimeException {
 	private final Object[] data;
 
 	public HttpOk(Object[] data) {
-		super("Solicitação registrada com sucesso.");
+		super("Solicitação válida.");
 		this.data = data;
 	}
 
